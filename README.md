@@ -9,8 +9,7 @@ of the Earth's surface, licensed **CC BY 4.0** and published as Cloud-Optimised
 GeoTIFFs in the **public** `gs://alphaearth_foundations` bucket — readable over
 `/vsicurl` with no sign-in. Each pixel is a unit-length vector in 64-D, which
 makes "find more like this" similarity search an exact cosine dot product, and
-multi-year change a direct pixel-to-pixel distance — the standout features of
-this toolbox.
+multi-year change a direct pixel-to-pixel distance.
 
 > **Status:** v0.10.0, experimental. The provider now ships **twelve** algorithms.
 > The eight no-dependency algorithms (Load, Load multiple years, Embedding→RGB,
@@ -190,7 +189,7 @@ already have when you want a specific tile or a pre-clipped scene.
 The endpoint is defined by the constants `GCS_BUCKET`, `GCS_PREFIX` and
 `GCS_HOST` in `alphaearth_toolbox/aecore/intake.py`; the tile-selection maths and
 GCS listing there are pure standard library and unit-tested with an injected
-fetch (no network in tests).
+fetch.
 
 ## Architecture
 
@@ -257,15 +256,3 @@ sandbox and run for real in the container, against both the 3.34 LTR image
 - **AlphaEarth data:** CC BY 4.0 — attribute Google DeepMind. The required
   attribution string is exposed as `aecore.intake.ATTRIBUTION` and shown in each
   algorithm's help. AlphaEarth is commercially usable with attribution.
-
-## Roadmap
-
-See `SCOPE.md` and `docs/ROADMAP.md`. The scoped no-dependency tier, the
-scikit-learn tier, the guided wizard, model persistence, the preset library, the
-one-step change-over-years algorithm, the change-report algorithm, the one-step
-classify-over-years algorithm and opt-in hyper-parameter tuning / automatic-k are
-all in place; the remaining work is broadening real-QGIS coverage (smoke tests in
-3.34 LTR and Qt6/QGIS 4 — the QGIS-backed regression tests already run in the CI
-container), cutting a GitHub Release, and submitting to plugins.qgis.org, after
-which the `experimental` flag can be cleared. Longer-horizon ideas include pluggable
-embedding backends and richer batch/model-management workflows.
