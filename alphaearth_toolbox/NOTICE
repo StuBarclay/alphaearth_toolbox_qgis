@@ -1,0 +1,41 @@
+AlphaEarth Toolbox for QGIS
+===========================
+
+Copyright (C) 2026 Stuart Barclay
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation; either version 2 of the License, or (at your option)
+any later version. See the LICENSE file for the full GNU General Public
+License, version 2.
+
+
+Third-party data
+----------------
+
+This plugin fetches, visualises and analyses the Google DeepMind AlphaEarth
+Satellite Embedding V1 dataset. That dataset is NOT part of this plugin and
+is NOT covered by the GNU General Public License above. It is published by
+Google DeepMind and is licensed under the Creative Commons Attribution 4.0
+International licence (CC BY 4.0):
+
+    https://creativecommons.org/licenses/by/4.0/
+
+The data licence (CC BY 4.0) applies only to the AlphaEarth data and any
+products derived from it. It is independent of, and does not change, the
+GPL-2.0-or-later licence that governs this plugin's own source code.
+
+
+Required attribution
+---------------------
+
+CC BY 4.0 requires attribution. Any map, layer, figure or other product
+you derive from AlphaEarth data using this plugin should carry the
+following credit:
+
+    Contains modified Google DeepMind AlphaEarth Satellite Embedding V1
+    data (CC BY 4.0).
+
+Attribution reference:
+Brown, C.F., et al. AlphaEarth Foundations / Satellite Embedding V1,
+Google DeepMind. Distributed under CC BY 4.0.
