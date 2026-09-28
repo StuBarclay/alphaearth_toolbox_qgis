@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  checks:
+    name: Lint, type-check and test (no GDAL)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dev tooling
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+      - name: Ruff (lint)
+        run: ruff check .
+      - name: Ruff (format check)
+        run: ruff format --check .
+      - name: mypy
+        run: mypy
+      - name: pytest
+        run: pytest
+
+  qgis:
+    name: Tests in QGIS/GDAL (${{ matrix.image }})
+    runs-on: ubuntu-latest
+    # The 3.34 LTR run gates the build; the moving "latest" (Qt6/QGIS 4) run is
+    # informational so an upstream change there cannot spuriously block a merge.
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: qgis/qgis:release-3_34
+            experimental: false
+          - image: qgis/qgis:latest
+            experimental: true
+    container:
+      image: ${{ matrix.image }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Show interpreter, GDAL and QGIS versions
+        run: |
+          python3 --version
+          python3 -c "from osgeo import gdal; print('GDAL', gdal.__version__)"
+          python3 -c "from qgis.core import Qgis; print('QGIS', Qgis.QGIS_VERSION)" || true
+      - name: Install pytest into the QGIS Python
+        # Newer base images are PEP 668 "externally managed"; fall back for older ones.
+        run: python3 -m pip install --break-system-packages pytest || python3 -m pip install pytest
+      - name: Run the test suite with QGIS/GDAL available
+        # The pure tests run here too; the GDAL-backed parity tests
+        # (tests/test_raster_gdal.py) only run in this job -- the "checks" job has
+        # no GDAL and skips them.
+        run: xvfb-run -a python3 -m pytest -ra

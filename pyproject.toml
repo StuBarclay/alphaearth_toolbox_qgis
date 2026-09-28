@@ -1,0 +1,84 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "alphaearth-toolbox-qgis"
+version = "0.10.0"
+description = "QGIS plugin: load, visualise and analyse Google AlphaEarth Satellite Embedding V1 (RGB visualisation, similarity, change/trajectory, change reporting/charts, training-sample extraction, and an optional scikit-learn tier: classify/cluster/regress) with no Earth Engine account."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "GPL-2.0-or-later" }
+authors = [{ name = "Stuart Barclay", email = "stu_barclay@hotmail.com" }]
+# Runtime deps ship with QGIS (numpy, GDAL). The plugin adds none of its own;
+# scikit-learn is an optional, guided install for the later ML tier only.
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.5",
+    "mypy==1.11.2",
+    "numpy>=1.24",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["alphaearth_toolbox"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "C4", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+# QGIS mandates mixedCase method names on the plugin/provider/algorithm classes.
+"alphaearth_toolbox/plugin.py" = ["N802"]
+"alphaearth_toolbox/provider.py" = ["N802"]
+"alphaearth_toolbox/algorithms/*.py" = ["N802", "N803"]
+"alphaearth_toolbox/gui/*.py" = ["N802", "N803"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+files = ["alphaearth_toolbox", "tests"]
+
+# Third-party / QGIS-runtime modules ship no type stubs. scikit-learn (optional
+# ML tier), matplotlib (optional PNG/PDF report tier) and rasterio (optional
+# parity tests) are absent in the pure CI job and stub-less when present, so treat
+# their imports as untyped either way. The LibreOffice UNO bridge (uno,
+# com.sun.star.*), used only by the doc-build script, is likewise stub-less.
+[[tool.mypy.overrides]]
+module = [
+    "osgeo.*",
+    "qgis.*",
+    "processing.*",
+    "sklearn.*",
+    "matplotlib.*",
+    "rasterio.*",
+    "uno",
+    "com.sun.star.*",
+]
+ignore_missing_imports = true
+
+# Glue that subclasses QGIS's untyped (Any) base classes or drives the untyped
+# GDAL binding: relax the strict rules that only make sense for typed code.
+[[tool.mypy.overrides]]
+module = [
+    "alphaearth_toolbox.plugin",
+    "alphaearth_toolbox.provider",
+    "alphaearth_toolbox.algorithms.*",
+    "alphaearth_toolbox.gui.*",
+    "alphaearth_toolbox.aecore._raster",
+]
+disallow_subclassing_any = false
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+disallow_any_generics = false
+warn_return_any = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+pythonpath = ["."]

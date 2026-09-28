@@ -1,0 +1,27 @@
+# --- Python bytecode / packaging ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# --- Tooling caches ---
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# --- Build artifact ---
+# The installable plugin ZIP is a build output. Attach it to a GitHub Release
+# (and upload it to plugins.qgis.org) rather than committing it to source.
+# Delete this line if you prefer to keep the ZIP browsable in the repo.
+/alphaearth_toolbox.zip
+
+# Portable git bundle snapshots (a delivery/transfer artifact, not source).
+*.bundle
+
+# --- Editor / OS cruft ---
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
